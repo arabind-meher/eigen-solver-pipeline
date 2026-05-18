@@ -141,7 +141,7 @@ def evaluate_all(results_path: str, dataset_path: str, output_path: str = None):
 
 if __name__ == "__main__":
     evaluate_all(
-        results_path="results/result_llama4.json",
+        results_path="results/result_innovation_openai.json",
         dataset_path="data/dataset.json",
-        output_path="results/m_result_llama4.json",
+        output_path="results/m_result_innovation_openai.json",
     )

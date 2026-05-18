@@ -1,5 +1,5 @@
 [project]
-name = "llm-linear-algebra-solver"
+name = "eigne-solver-pipeline"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
