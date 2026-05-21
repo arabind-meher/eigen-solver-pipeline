@@ -5,5 +5,5 @@ if __name__ == "__main__":
     evaluator.evaluate(
         results_path="results/result_innovation_openai.json",
         dataset_path="data/dataset.json",
-        output_path="m_results/m_result_innovations_openai.json",
+        output_path="m_results/m_result_innovation_openai.json",
     )

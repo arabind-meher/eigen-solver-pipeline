@@ -3,30 +3,30 @@ import os
 import time
 
 from dotenv import load_dotenv
-from groq import Groq
+from openai import OpenAI
 
 from prompts.vanilla import get_prompt
 
-load_dotenv(os.path.join("config", "groq.env"))
-client = Groq(api_key=os.getenv("GROQ_API_KEY_N"))
+load_dotenv(os.path.join("config", "openai.env"))
+client = OpenAI()
 
 
-def call_llama3(prompt: str) -> dict:
+def call_openai(prompt: str) -> dict:
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.0,
         max_tokens=8192,
+        response_format={"type": "json_object"},  # guarantees valid JSON, no markdown fences
     )
     raw = response.choices[0].message.content.strip()
 
     os.makedirs("results", exist_ok=True)
-    with open("results/raw_llama3.txt", "w", encoding="utf-8") as raw_file:
+    with open("results/raw_openai.txt", "a", encoding="utf-8") as raw_file:
         raw_file.write(f"{'='*50}\n")
         raw_file.write(raw)
         raw_file.write(f"\n{'='*50}\n\n")
 
-    raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
     return json.loads(raw)
 
 
@@ -45,7 +45,7 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
 
         result = None
         try:
-            llm_output = call_llama3(prompt)
+            llm_output = call_openai(prompt)
             result = {
                 "id": sample["id"],
                 "equation": sample["equation"],
@@ -70,7 +70,7 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
             else:
                 print(f"  SKIPPED: {sample['id']} — API call failed")
 
-        time.sleep(30)
+        time.sleep(1)  # OpenAI rate limits are more lenient than Groq free tier
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -80,4 +80,4 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
 
 
 if __name__ == "__main__":
-    run_baseline(dataset_path="data/dataset.json", output_path="results/result_llama3.json", limit=1)
+    run_baseline(dataset_path="data/dataset.json", output_path="results/result_openai.json", limit=1)

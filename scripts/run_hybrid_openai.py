@@ -5,10 +5,10 @@ import time
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from prompts.baseline import get_prompt
+from prompts.hybrid import get_prompt
 
 load_dotenv(os.path.join("config", "openai.env"))
-client = OpenAI()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def call_openai(prompt: str) -> dict:
@@ -17,12 +17,12 @@ def call_openai(prompt: str) -> dict:
         messages=[{"role": "user", "content": prompt}],
         temperature=0.0,
         max_tokens=8192,
-        response_format={"type": "json_object"},  # guarantees valid JSON, no markdown fences
+        response_format={"type": "json_object"},
     )
     raw = response.choices[0].message.content.strip()
 
     os.makedirs("results", exist_ok=True)
-    with open("results/raw_openai.txt", "a", encoding="utf-8") as raw_file:
+    with open("results/raw_hybrid_openai.txt", "a", encoding="utf-8") as raw_file:
         raw_file.write(f"{'='*50}\n")
         raw_file.write(raw)
         raw_file.write(f"\n{'='*50}\n\n")
@@ -30,7 +30,7 @@ def call_openai(prompt: str) -> dict:
     return json.loads(raw)
 
 
-def run_baseline(dataset_path: str, output_path: str, limit: int = None):
+def run_hybrid(dataset_path: str, output_path: str, limit: int = None):
     with open(dataset_path, "r") as f:
         dataset = json.load(f)
 
@@ -41,7 +41,12 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
     for i, sample in enumerate(dataset):
         print(f"[{i+1}/{len(dataset)}] Processing {sample['id']}...")
 
-        prompt = get_prompt(matrix=sample["equation"]["matrix"], dimension=sample["equation"]["dimension"])
+        prompt = get_prompt(
+            matrix=sample["equation"]["matrix"],
+            dimension=sample["equation"]["dimension"],
+            eigenvalues=sample["result"]["eigenvalues"],
+            eigenvectors=sample["result"]["eigenvectors"],
+        )
 
         result = None
         try:
@@ -70,7 +75,7 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
             else:
                 print(f"  SKIPPED: {sample['id']} — API call failed")
 
-        time.sleep(1)  # OpenAI rate limits are more lenient than Groq free tier
+        time.sleep(1)
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -80,4 +85,4 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
 
 
 if __name__ == "__main__":
-    run_baseline(dataset_path="data/dataset.json", output_path="results/result_openai.json", limit=1)
+    run_hybrid(dataset_path="data/dataset.json", output_path="results/result_hybrid_openai.json", limit=1)
