@@ -210,6 +210,7 @@ __marimo__/
 # Local Files
 .claude/
 .vscode/
+.idea/
 
 # Config
 config/
@@ -222,3 +223,5 @@ real_data.py
 result*/
 src/baseline
 test_openai.py
+scripts/metrics.py
+m_results
