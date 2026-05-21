@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 from groq import Groq
 
-from prompts.baseline import get_prompt
+from prompts.vanilla import get_prompt
 
 load_dotenv(os.path.join("config", "groq.env"))
 client = Groq(api_key=os.getenv("GROQ_API_KEY_N"))

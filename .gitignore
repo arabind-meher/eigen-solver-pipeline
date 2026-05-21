@@ -225,3 +225,4 @@ src/baseline
 test_openai.py
 scripts/metrics.py
 m_results
+src/prompts/cot/

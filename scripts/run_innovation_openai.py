@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from prompts.innovation import get_prompt
+from prompts.step_eigen import get_prompt
 
 load_dotenv(os.path.join("config", "openai.env"))
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
