@@ -45,6 +45,7 @@ def run_innovation(dataset_path: str, output_path: str, limit: int = None):
             matrix=sample["equation"]["matrix"],
             dimension=sample["equation"]["dimension"],
             intermediate_steps=sample["intermediate_steps"],
+            eigenvectors=sample["result"]["eigenvectors"],
         )
 
         result = None
