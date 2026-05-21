@@ -10,13 +10,19 @@ _REGISTRY: dict[str, any] = {
 LATEST: str = "v1"
 
 
-def get_prompt(matrix: list[list[float]], dimension: int, version: str = LATEST) -> str:
-    """Return a formatted prompt string for the given matrix and dimension."""
+def get_prompt(
+    matrix: list[list[float]],
+    dimension: int,
+    eigenvalues: list[float],
+    eigenvectors: list[list[float]],
+    version: str = LATEST,
+) -> str:
+    """Return a formatted prompt string for the given matrix, dimension, and verified results."""
     module = _REGISTRY.get(version)
     if module is None:
         available = list(_REGISTRY.keys())
         raise ValueError(f"Unknown prompt version '{version}'. Available: {available}")
-    return module.prompt(matrix, dimension)
+    return module.prompt(matrix, dimension, eigenvalues, eigenvectors)
 
 
 def list_versions() -> list[str]:
