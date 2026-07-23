@@ -75,7 +75,7 @@ def run_innovation(dataset_path: str, output_path: str, limit: int = None):
             else:
                 print(f"  SKIPPED: {sample['id']} — API call failed")
 
-        time.sleep(1)
+        time.sleep(30)
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -85,4 +85,4 @@ def run_innovation(dataset_path: str, output_path: str, limit: int = None):
 
 
 if __name__ == "__main__":
-    run_innovation(dataset_path="data/dataset.json", output_path="results/result_innovation_openai.json", limit=1)
+    run_innovation(dataset_path="data/dataset.json", output_path="results/result_step_eigen_openai.json")

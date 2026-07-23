@@ -70,7 +70,7 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
             else:
                 print(f"  SKIPPED: {sample['id']} — API call failed")
 
-        time.sleep(1)  # OpenAI rate limits are more lenient than Groq free tier
+        time.sleep(30)  # OpenAI rate limits are more lenient than Groq free tier
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
@@ -80,4 +80,4 @@ def run_baseline(dataset_path: str, output_path: str, limit: int = None):
 
 
 if __name__ == "__main__":
-    run_baseline(dataset_path="data/dataset.json", output_path="results/result_openai.json", limit=1)
+    run_baseline(dataset_path="data/dataset.json", output_path="results/result_vanilla_openai.json")
